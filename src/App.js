@@ -64,6 +64,9 @@ function App() {
             {bull} Surname {footballer.surname}
           </Typography>
           <Typography>
+            {bull} city {footballer.city}
+          </Typography>
+          <Typography>
             {bull} E-mail: {footballer.email}
           </Typography>
         </CardContent>
@@ -101,9 +104,9 @@ function App() {
         </Box>
         <TabPanel value={value === "1" ? "1" : "2"}>
           <Grid container spacing={2}>
-            {footballers.map((footballer) => {
+            {footballers.map((footballer, index) => {
               return (
-                <Grid item xs={12} sm={6} md={4}>
+                <Grid key={index} item xs={12} sm={6} md={4}>
                   {value === "1"
                     ? renderCard(footballer)
                     : renderCard2(footballer)}
