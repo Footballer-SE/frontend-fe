@@ -6,60 +6,84 @@ import {
   createTheme,
   Stack,
   IconButton,
+  Slide,
+  Button,
+  Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import * as React from "react";
-import HomeIcon from "@mui/icons-material/Home";
+import HomeTwoToneIcon from "@mui/icons-material/HomeTwoTone";
 import AlarmIcon from "@mui/icons-material/Alarm";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import QuestionAnswerTwoToneIcon from "@mui/icons-material/QuestionAnswerTwoTone";
 import { styled } from "@mui/material/styles";
-import Fab from "@mui/material/Fab";
-import SportsSoccerRoundedIcon from "@mui/icons-material/SportsSoccerRounded";
+import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 
 // TODO componentlara ayır app.js boşalt
 function BottomNavBar() {
+  const [clicked, setClicked] = React.useState(false);
   const theme = createTheme({
     palette: {
-      primary: { main: "#009688" },
+      primary: { main: "#148c32" },
     },
   });
-  const StyledFab = styled(Fab)({
-    zIndex: 1,
-    top: -30,
-    margin: "0 20px",
-    paddingLeft: "1px",
+  const StyledFab = styled(IconButton)({
+    zIndex: 2,
+    top: clicked ? -30 : 0,
+    scale: "1.4",
+    background: clicked ? "white" : "#00000000",
   });
+  const StyledPaper = styled(Paper)({
+    position: "fixed",
+    height: "100px",
+    width: "250px",
+    zIndex: 1,
+    bottom: 100,
+    display: clicked,
+  });
+  //TODO STyled paper component yap topnav a da alcan çünkü
+  const showAdvertPanel = () => {
+    return (
+      <StyledPaper>
+        <Typography textAlign={"center"}>Ne Arıyorsun?</Typography>
+        <Stack direction={"row"} pt={2}>
+          <IconButton background={"black"}>Takım</IconButton>
+          <IconButton>Oyuncu</IconButton>
+          <IconButton>Rakip</IconButton>
+        </Stack>
+      </StyledPaper>
+    );
+  };
+  const buttonClicked = () => {
+    setClicked(!clicked);
+  };
 
   return (
     <ThemeProvider theme={theme}>
       <Box>
-        <CssBaseline />
         <Paper
-          sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
+          sx={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background: "#f0f0f0",
+            boxShadow: "none",
+          }}
           elevation={3}
         >
           <Stack direction="row" justifyContent={"space-evenly"}>
             <Link to="/asd">
               <IconButton aria-label="delete">
-                <HomeIcon fontSize="large" />
+                <HomeTwoToneIcon sx={{ color: "#148c32" }} fontSize="large" />
               </IconButton>
             </Link>
-            <IconButton aria-label="delete" disabled color="primary">
-              <HomeIcon fontSize="large" />
-            </IconButton>
-            <StyledFab size="large" color="primary">
-              <SportsSoccerRoundedIcon fontSize="large" />
+            {clicked ? showAdvertPanel() : null}
+            <StyledFab size="large" color="primary" onClick={buttonClicked}>
+              <SportsSoccerIcon fontSize="large" />
             </StyledFab>
-            <IconButton
-              size="large"
-              color="secondary"
-              aria-label="add an alarm"
-            >
-              <AlarmIcon fontSize="inherit" />
-            </IconButton>
-            <Link to={"/profile"}>
-              <IconButton color="primary" aria-label="add to shopping cart">
-                <AccountBoxIcon fontSize="large" />
+            <Link to={"/messages"}>
+              <IconButton color="primary" aria-label="Messages">
+                <QuestionAnswerTwoToneIcon fontSize="large" />
               </IconButton>
             </Link>
           </Stack>
