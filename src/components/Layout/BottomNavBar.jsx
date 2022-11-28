@@ -72,7 +72,7 @@ function BottomNavBar() {
           elevation={3}
         >
           <Stack direction="row" justifyContent={"space-evenly"}>
-            <Link to="/asd">
+            <Link to="/">
               <IconButton aria-label="delete">
                 <HomeTwoToneIcon sx={{ color: "#148c32" }} fontSize="large" />
               </IconButton>

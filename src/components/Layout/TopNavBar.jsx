@@ -16,14 +16,17 @@ import { ThemeProvider, createTheme } from "@mui/material";
 import { Helpers } from "../Utility/Helpers";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
+import LoginModal from "../Login/LoginModal.component";
+import RegisterModal from "../Login/RegisterModal.component";
 
 const pages = ["Home", "Messages"];
-const settings = ["Profile", "Logout"];
+const settings = ["Profile", "Logout","Login"];
 
 const TopNavBar = (props) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  const [openLoginModal, setOpenLoginModal] = React.useState(false);
+  const [openRegisterModal, setOpenRegisterModal] = React.useState(false);
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -42,7 +45,11 @@ const TopNavBar = (props) => {
     palette: {
       primary: { main: "#148c32" },
     },
+    typography: {
+      fontFamily: "sans-serif"
+    },
   });
+
   const isMdDown = Helpers.useMediaQuery("down", "md");
   const StyledFab = styled(IconButton)({
     position: "fixed",
@@ -51,9 +58,18 @@ const TopNavBar = (props) => {
     zIndex: 1,
     scale: "1.8",
   });
-
+    function handleClick(event){
+      if(event.target.name ==="Login"){
+        setOpenLoginModal(true)
+      }
+    }
   return (
+    <>
+   
+    
     <ThemeProvider theme={theme}>
+    <LoginModal setOpenLoginModal={setOpenLoginModal} openLoginModal={openLoginModal} setOpenRegisterModal={setOpenRegisterModal}/>
+    <RegisterModal openRegisterModal={openRegisterModal} setOpenRegisterModal={setOpenRegisterModal} />
       <AppBar position="static">
         <Container maxWidth="xl">
           <Toolbar disableGutters>
@@ -92,7 +108,7 @@ const TopNavBar = (props) => {
               variant="h5"
               noWrap
               component="a"
-              href=""
+              href="/"
               sx={{
                 mr: 2,
                 display: { xs: "flex", md: "none" },
@@ -142,13 +158,19 @@ const TopNavBar = (props) => {
               >
                 {settings.map((setting) => (
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Link
+                    {setting!=="Login" ? <Link
                       style={{ textDecoration: "none", color: "black" }}
                       to={`${setting}`}
                     >
                       {/**TODO logout ise logout yapılacak */}
-                      {setting}
-                    </Link>
+                      <Button name={setting} >
+                        {setting}
+                      </Button>
+                    </Link> : 
+                    <Button name={setting} onClick={handleClick}>
+                    {setting}
+                  </Button>
+                    } 
                   </MenuItem>
                 ))}
               </Menu>
@@ -157,6 +179,7 @@ const TopNavBar = (props) => {
         </Container>
       </AppBar>
     </ThemeProvider>
+    </>
   );
 };
 
