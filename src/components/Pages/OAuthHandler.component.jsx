@@ -7,7 +7,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { login } from "../Store/UserSlice";
-import { ACCESS_TOKEN } from "../Utility/Endpoints";
+import { ACCESS_TOKEN } from "../Utility/Constants/EndpointConstants";
 
 const OAuthHandler = () => {
   const [searchParam] = useSearchParams();

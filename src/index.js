@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import { Provider } from "react-redux";
 import store from "./components/Store/Store";
+import DialogProviders from "./components/Store/Providers/Dialog.provider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -13,7 +14,10 @@ root.render(
     
       <BrowserRouter>
         <SnackbarProvider maxSnack={3} autoHideDuration={1500}>
-          <App />
+          <DialogProviders>
+            <App />
+          </DialogProviders>
+          
         </SnackbarProvider>
       </BrowserRouter>
     

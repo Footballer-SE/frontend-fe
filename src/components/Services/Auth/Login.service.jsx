@@ -11,7 +11,6 @@ const LoginService = {
       return result;
     },
     GetCurrentUser: async function({headers}){
-
       const result = await Http.GET(Endpoints.CURRENT_USER, undefined,headers)
       return result;
     }

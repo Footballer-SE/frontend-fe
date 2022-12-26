@@ -7,12 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import NotFound from "./components/Pages/NotFound";
 import OAuthHandler from "./components/Pages/OAuthHandler.component";
 import LoginService from "./components/Services/Auth/Login.service";
-import Endpoints, {
-  ACCESS_TOKEN,
-  HEADER,
-} from "./components/Utility/Endpoints";
+import { ACCESS_TOKEN } from "./components/Utility/Constants/EndpointConstants";
 import { Helpers } from "./components/Utility/Helpers";
 import { login, setUserData } from "./components/Store/UserSlice";
+import AdvertPage from "./components/Pages/AdvertPage";
 
 function App() {
   const user = useSelector((state) => state.user);
@@ -62,10 +60,11 @@ function App() {
         {user.isLoggedIn && (
           <Route path={"/profile"} element={<UserProfilePage />} />
         )}
+        {user.isLoggedIn && <Route path="/advert" element={<AdvertPage />} />} 
         {!user.isLoggedIn && (
           <Route path="/oauth2/redirect" element={<OAuthHandler />}></Route>
         )}
-        <Route path="*" element={<NotFound />} />
+         <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>
   );

@@ -1,28 +1,25 @@
 import {
   Box,
-  CssBaseline,
   Paper,
   ThemeProvider,
   createTheme,
   Stack,
   IconButton,
-  Slide,
-  Button,
-  Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import * as React from "react";
 import HomeTwoToneIcon from "@mui/icons-material/HomeTwoTone";
 import QuestionAnswerTwoToneIcon from "@mui/icons-material/QuestionAnswerTwoTone";
 import { useSelector } from "react-redux";
-import AdvertButton from "../AdvertButton/AdvertButton.component";
+import AdvertButton from "../Adverts/AdvertButton/AdvertButton.component"
+import { COLORS } from "../Utility/Constants/Colors";
 
 
 function BottomNavBar() {
   const user = useSelector((state) => state.user);
   const theme = createTheme({
     palette: {
-      primary: { main: "#148c32" },
+      primary: { main: `${COLORS.MAIN_GREEN}` },
     },
   });
 
@@ -36,7 +33,7 @@ function BottomNavBar() {
             bottom: 0,
             left: 0,
             right: 0,
-            background: "#f0f0f0",
+            background: `${COLORS.MAIN_GREEN}`,
             boxShadow: "none",
           }}
           elevation={3}
@@ -44,14 +41,14 @@ function BottomNavBar() {
           <Stack direction="row" justifyContent={"space-evenly"}>
             <Link to="/">
               <IconButton aria-label="delete">
-                <HomeTwoToneIcon sx={{ color: "#148c32" }} fontSize="large" />
+                <HomeTwoToneIcon style={{color:"white"}} fontSize="large" />
               </IconButton>
             </Link>
-            {true&& (
+            {true && (
               <>
                 <AdvertButton  />
                 <Link to={"/messages"}>
-                  <IconButton color="primary" aria-label="Messages">
+                  <IconButton style={{color:"white"}} aria-label="Messages">
                     <QuestionAnswerTwoToneIcon fontSize="large" />
                   </IconButton>
                 </Link>

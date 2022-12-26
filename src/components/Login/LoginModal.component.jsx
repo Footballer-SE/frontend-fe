@@ -4,15 +4,15 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
-import { Avatar, Box, Grid, Stack, Typography } from "@mui/material";
+import {  Box, Grid, Stack, Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
 import LoginService from "../Services/Auth/Login.service";
 import { useDispatch } from "react-redux";
 import { login } from "../Store/UserSlice";
-import GoogleIcon from "@mui/icons-material/Google";
-import { ACCESS_TOKEN, Endpoints } from "../Utility/Endpoints";
+import { ACCESS_TOKEN } from "../Utility/Constants/EndpointConstants";
 import LoginWithEmail from "./LoginWithEmail.component";
 import LoginWithGoogle from "./LoginWithGoogle.component";
+import { COLORS } from "../Utility/Constants/Colors";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -92,7 +92,7 @@ export default function LoginModal({
       aria-describedby="alert-dialog-slide-description"
     >
 
-      <DialogTitle  alignSelf={"center"}  variant={"h5"}>
+      <DialogTitle color={COLORS.MAIN_GREEN}  alignSelf={"center"}  variant={"h5"}>
         {"Hesabınıza giriş yapınız"}
       </DialogTitle>
 

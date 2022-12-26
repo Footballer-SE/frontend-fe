@@ -17,11 +17,11 @@ import { Link, useNavigate } from "react-router-dom";
 import LoginModal from "../Login/LoginModal.component";
 import RegisterModal from "../Login/RegisterModal.component";
 import { useDispatch, useSelector } from "react-redux";
-import AdvertButton from "../AdvertButton/AdvertButton.component";
+import AdvertButton from "../Adverts/AdvertButton/AdvertButton.component";
 import { logout } from "../Store/UserSlice";
 import { useSnackbar } from "notistack";
-import { ACCESS_TOKEN } from "../Utility/Endpoints";
-import AdvertButton2 from "../AdvertButton/AdvertButton2.component";
+import { ACCESS_TOKEN } from "../Utility/Constants/EndpointConstants";
+import { COLORS } from "../Utility/Constants/Colors";
 
 const TopNavBar = (props) => {
   const [, setAnchorElNav] = React.useState(null);
@@ -50,7 +50,7 @@ const TopNavBar = (props) => {
   };
   const theme = createTheme({
     palette: {
-      primary: { main: "#148c32" },
+      primary: { main: `${COLORS.MAIN_GREEN}` },
     },
     typography: {
       fontFamily: "sans-serif",
@@ -109,7 +109,7 @@ const TopNavBar = (props) => {
               >
                 FOOTBALLER
               </Typography>
-              {!isMdDown && <AdvertButton2 />}
+              {!isMdDown && <AdvertButton setOpenLoginModal={setOpenLoginModal} />}
               <SportsSoccerIcon
                 fontSize="large"
                 sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
@@ -147,7 +147,7 @@ const TopNavBar = (props) => {
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt={user?.data?.data?.name || " "} src={user?.data?.data?.imageUrl || " "} />
+                    <Avatar alt={user?.data?.data?.name || ""} src={user?.data?.data?.imageUrl || " "} />
                   </IconButton>
                 </Tooltip>
                 <Menu

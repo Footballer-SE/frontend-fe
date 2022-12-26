@@ -2,6 +2,7 @@ import { Avatar, Button } from "@mui/material";
 import { Box } from "@mui/system";
 import { Endpoints } from "../Utility/Endpoints";
 import googleLogo from "../../img/google-logo.png"
+import { COLORS } from "../Utility/Constants/Colors";
 
 export default function LoginWithGoogle() {
     
@@ -22,15 +23,13 @@ export default function LoginWithGoogle() {
               />
             }
             sx={{
-              border: "1px solid #148c32",
+              border: `1px solid ${COLORS.MAIN_GREEN}`,
               color: "black",
-              background: "#fff",
               borderRadius: 20,
               width: "300px",
             }}
             size={"large"}
             variant="outlined"
-
           >
             Google ile giriş yap
           </Button>

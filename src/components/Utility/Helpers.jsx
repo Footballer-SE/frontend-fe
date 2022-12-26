@@ -1,6 +1,7 @@
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/system";
-import { ACCESS_TOKEN } from "./Endpoints";
+import { ACCESS_TOKEN } from "./Constants/EndpointConstants";
+import dayjs from "dayjs";
 
 
 
@@ -20,7 +21,11 @@ export const Helpers = {
     else{
       return null
     }
-  }
+  },
+  Date(date , format = "YYYY-MM-DD@HH:mm:ss") {
+    if (!date) { return; }
+    return dayjs(date).format(format);
+  },
 
 
 };

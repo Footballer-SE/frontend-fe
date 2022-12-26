@@ -1,4 +1,5 @@
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
+import { Box } from "@mui/system";
 import { Fragment } from "react";
 import { Helpers } from "../Utility/Helpers";
 
@@ -11,8 +12,13 @@ const Layout = (props) => {
   return (
     <Fragment>
       <TopNavBar />
-      <Grid component={"main"} container direction={"column"} marginLeft={"auto"} marginRight={"auto"} maxWidth={"600px"} justifyContent={"center"} >
-      {props.children}
+      <Grid component={"main"} container spacing={1} pt={1} direction={"row"} justifyContent={"center"} textAlign={"center"} >
+       
+        <Grid item xs={12} md={12}>
+        {props.children}
+        </Grid>
+       
+
       </Grid>
       {isMdDown && <BottomNavBar />}
     </Fragment>
