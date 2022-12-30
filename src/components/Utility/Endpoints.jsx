@@ -1,5 +1,5 @@
-const source = "http://localhost:8080";
-const OAUTH2_REDIRECT_URI = 'http://localhost:3000/oauth2/redirect';
+const source = "https://footballer-production-1ce5.up.railway.app ";
+const OAUTH2_REDIRECT_URI = 'https://footballerfe.netlify.app/oauth2/redirect';
 export const ACCESS_TOKEN = 'accessToken';
 export const Endpoints = {
   GetAllFootballers: source + "/allFootballers", // get
