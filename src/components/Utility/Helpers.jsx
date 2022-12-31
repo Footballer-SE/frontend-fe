@@ -2,9 +2,6 @@ import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/system";
 import { ACCESS_TOKEN } from "./Constants/EndpointConstants";
 import dayjs from "dayjs";
-
-
-
 export const Helpers = {
   useMediaQuery: (directions, category) => {
     if (!directions || !category) {
