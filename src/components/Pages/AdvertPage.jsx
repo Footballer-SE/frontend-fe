@@ -22,6 +22,7 @@ import { DialogIcon } from "../Utility/Constants/Dialog";
 import AdvertService from "../Services/Advert/Advert.service";
 import { useSnackbar } from "notistack";
 import { useSelector } from "react-redux";
+import { ADVERT_TRANSLATE } from "../Utility/Constants/AdvertType";
 
 const AdvertPage = () => {
   const isMdDown = Helpers.useMediaQuery("down", "md");
@@ -95,6 +96,14 @@ const AdvertPage = () => {
   function renderAdvert(type) {
     return (
       <>
+        <Grid item container justifyContent={"center"}>
+          <Typography
+            fontWeight={"bold"}
+            mb={1}
+            variant="h4"
+          >{`${ADVERT_TRANSLATE[advertType]} arama ilanı`}</Typography>
+        </Grid>
+
         <Grid
           container
           item
@@ -148,29 +157,31 @@ const AdvertPage = () => {
             />
           </Grid>
         </Grid>
-        <Grid container item direction={"column"} gap={2}>
-          <Typography variant="h5">Pozisyon seçiniz</Typography>
-          <Grid
-            justifyContent={"center"}
-            item
-            container
-            direction={"row"}
-            gap={1}
-          >
-            {allPositions?.map((e) => {
-              return (
-                <Chip
-                  key={e?.id}
-                  color="success"
-                  onClick={(event) => handleChipClick(e?.id, event)}
-                  label={`${POSITION_TYPE[e.positionName]}`}
-                  icon={positions.includes(e?.id) ? <DoneIcon /> : null}
-                  variant={positions.includes(e?.id) ? "filled" : "outlined"}
-                />
-              );
-            })}
+        {type !== "OPPONENT" && (
+          <Grid container item direction={"column"} gap={2}>
+            <Typography variant="h5">Pozisyon seçiniz</Typography>
+            <Grid
+              justifyContent={"center"}
+              item
+              container
+              direction={"row"}
+              gap={1}
+            >
+              {allPositions?.map((e) => {
+                return (
+                  <Chip
+                    key={e?.id}
+                    color="success"
+                    onClick={(event) => handleChipClick(e?.id, event)}
+                    label={`${POSITION_TYPE[e.positionName]}`}
+                    icon={positions.includes(e?.id) ? <DoneIcon /> : null}
+                    variant={positions.includes(e?.id) ? "filled" : "outlined"}
+                  />
+                );
+              })}
+            </Grid>
           </Grid>
-        </Grid>
+        )}
         <Grid container item direction={"column"} gap={2}>
           <Typography variant="h5">Açıklama yazınız.</Typography>
           <Grid
@@ -229,6 +240,7 @@ const AdvertPage = () => {
       return false;
     }
     if (
+      advertType !== "OPPONENT" &&
       Array.isArray(createData.data.positionIds) &&
       !createData.data.positionIds.length > 0
     ) {

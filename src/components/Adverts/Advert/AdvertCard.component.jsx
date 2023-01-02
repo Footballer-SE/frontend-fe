@@ -17,6 +17,7 @@ export default function AdvertCard({
   title,
   description,
   positions,
+  type,
   city,
   dateTime,
   user
@@ -33,7 +34,7 @@ export default function AdvertCard({
             variant={"filled"}
           />
         </CardContent>
-        <CardContent sx={{ marginY: -2 }}>
+       {type !== "OPPONENT" && <CardContent sx={{ marginY: -2 }}>
           <Grid container item md={12}>
             <Grid
               container
@@ -70,7 +71,7 @@ export default function AdvertCard({
               })}
             </Grid>
           </Grid>
-        </CardContent>
+        </CardContent>}
         <CardContent sx={{ marginY: -2 }}>
           <Grid container item md={12}>
             <Grid

@@ -241,6 +241,7 @@ export default function Advert() {
                 <LazyCard
                   key={advert.id}
                   dateTime={advert.dateTime}
+                  type={advert?.advertType}
                   title={`${ADVERT_TRANSLATE[advert.advertType]} ilanı`}
                   city={advert.city}
                   user={advert?.user}
@@ -288,7 +289,7 @@ export default function Advert() {
 
                       sx={{ width: "64px", height: "64px",
                     cursor:"pointer" }}
-                      src={team.avatarImageResponse.url}
+                      src={team?.avatarImageResponse?.url}
                     ></Avatar>
                     <Typography
                       variant="body2"

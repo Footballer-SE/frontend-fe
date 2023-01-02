@@ -48,7 +48,6 @@ export default function AdvertButton({setOpenLoginModal}) {
     { name: "Oyuncu", value: "player" },
     { name: "Rakip", value: "opponent" },
   ];
-
   const navigate = useNavigate();
   function handleAdvert(text) {
     if (!user.isLoggedIn) {
@@ -63,7 +62,19 @@ export default function AdvertButton({setOpenLoginModal}) {
           `${text.name} arama ilanı vermek istiyorsanız önce giriş yapmalısınız`,
         primaryButtonText: "Giriş yap",
       });
-    } else {
+    } 
+    else if(!user?.data?.data?.telephoneNumber){
+      dialogContext.setDialog({
+        modalOpen: true,
+        showCancelBtn: true,
+        callback: () => {navigate("/profile")},
+        icon: DialogIcon.info,
+        title: "Telefon Numarası Eksik!",
+        description:
+          `${text.name} arama ilanı vermek istiyorsanız önce telefon numarası girmelisiniz.`,
+        primaryButtonText: "Numaranı ekle",
+      });
+    }else {
       navigate(`/advert?type=${text.value}`);
     }
     setClicked(!clicked);
