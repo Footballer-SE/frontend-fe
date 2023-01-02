@@ -46,7 +46,7 @@ function BottomNavBar() {
             {user.isLoggedIn && (
               <>
                 <AdvertButton  />
-                <Link to={"/Apply"}>
+                <Link to={{pathname : 'http://ec2-3-75-224-255.eu-central-1.compute.amazonaws.com:8080'}} target="_blank">
                   <IconButton style={{color:"white"}} aria-label="Apply">
                     <QuestionAnswerTwoToneIcon fontSize="large" />
                   </IconButton>

@@ -29,7 +29,7 @@ const TopNavBar = (props) => {
   const [openRegisterModal, setOpenRegisterModal] = React.useState(false);
 
   const user = useSelector((state) => state.user);
-  let pages = user.isLoggedIn ? ["Anasayfa", "Başvurular"] : ["Anasayfa"];
+  let pages = user.isLoggedIn ? ["Anasayfa", "Mesajlar"] : ["Anasayfa"];
   let settings = user.isLoggedIn ? ["Profile", "Logout"] : ["Login"];
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -42,8 +42,8 @@ const TopNavBar = (props) => {
   const handleCloseNavMenu = (e) => {
     if (e.target.name === "Anasayfa") {
       navigate("/");
-    } else if (e.target.name === "Başvurular") {
-      navigate("/apply");
+    } else if (e.target.name === "Mesajlar") {
+      window.location.replace('http://ec2-3-75-224-255.eu-central-1.compute.amazonaws.com:8080');
     }
   };
 
