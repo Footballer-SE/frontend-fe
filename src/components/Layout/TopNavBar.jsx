@@ -24,15 +24,13 @@ import { ACCESS_TOKEN } from "../Utility/Constants/EndpointConstants";
 import { COLORS } from "../Utility/Constants/Colors";
 
 const TopNavBar = (props) => {
-  const [, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [openLoginModal, setOpenLoginModal] = React.useState(false);
   const [openRegisterModal, setOpenRegisterModal] = React.useState(false);
 
   const user = useSelector((state) => state.user);
-  let pages = user.isLoggedIn ? ["Home", "Messages"] : ["Home"];
+  let pages = user.isLoggedIn ? ["Anasayfa", "Başvurular"] : ["Anasayfa"];
   let settings = user.isLoggedIn ? ["Profile", "Logout"] : ["Login"];
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -41,8 +39,12 @@ const TopNavBar = (props) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+  const handleCloseNavMenu = (e) => {
+    if (e.target.name === "Anasayfa") {
+      navigate("/");
+    } else if (e.target.name === "Başvurular") {
+      navigate("/apply");
+    }
   };
 
   const handleCloseUserMenu = () => {
@@ -136,6 +138,7 @@ const TopNavBar = (props) => {
                 {pages.map((page) => (
                   <Button
                     key={page}
+                    name={page}
                     onClick={handleCloseNavMenu}
                     sx={{ my: 2, color: "white", display: "block" }}
                   >

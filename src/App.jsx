@@ -11,6 +11,8 @@ import { ACCESS_TOKEN } from "./components/Utility/Constants/EndpointConstants";
 import { Helpers } from "./components/Utility/Helpers";
 import { login, setUserData } from "./components/Store/UserSlice";
 import AdvertPage from "./components/Pages/AdvertPage";
+import ApplyPage from "./components/Pages/ApplyPage";
+import UserPage from "./components/Pages/UserPage";
 
 function App() {
   const user = useSelector((state) => state.user);
@@ -43,7 +45,7 @@ function App() {
           return;
         }
       } catch (error) {
-        console.log(error);
+        console.log("Err:",error);
       }
     }
   }
@@ -59,6 +61,12 @@ function App() {
         <Route path={"/"} element={<MainPage />} />
         {user.isLoggedIn && (
           <Route path={"/profile"} element={<UserProfilePage />} />
+        )}
+        {user.isLoggedIn && (
+          <Route path={"/apply"} element={<ApplyPage />} />
+        )}
+        {user.isLoggedIn && (
+          <Route path={"/user"} element={<UserPage />} />
         )}
         {user.isLoggedIn && <Route path="/advert" element={<AdvertPage />} />} 
         {!user.isLoggedIn && (

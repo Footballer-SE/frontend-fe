@@ -1,3 +1,3 @@
-export const source = "https://footballer-production-5d5c.up.railway.app";
-export const OAUTH2_REDIRECT_URI = 'http://footballerfe.netlify.app/oauth2/redirect';
+export const source = "http://localhost:8080";
+export const OAUTH2_REDIRECT_URI = 'http://localhost:3000/oauth2/redirect';
 export const ACCESS_TOKEN = 'accessToken';

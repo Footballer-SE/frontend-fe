@@ -23,7 +23,6 @@ function BottomNavBar() {
     },
   });
 
-
   return (
     <ThemeProvider theme={theme}>
       <Box>
@@ -44,11 +43,11 @@ function BottomNavBar() {
                 <HomeTwoToneIcon style={{color:"white"}} fontSize="large" />
               </IconButton>
             </Link>
-            {true && (
+            {user.isLoggedIn && (
               <>
                 <AdvertButton  />
-                <Link to={"/messages"}>
-                  <IconButton style={{color:"white"}} aria-label="Messages">
+                <Link to={"/Apply"}>
+                  <IconButton style={{color:"white"}} aria-label="Apply">
                     <QuestionAnswerTwoToneIcon fontSize="large" />
                   </IconButton>
                 </Link>

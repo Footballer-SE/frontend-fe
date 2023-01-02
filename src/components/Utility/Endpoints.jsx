@@ -16,5 +16,9 @@ export const Endpoints = {
   CreateAdvert: source + "/advert/addAdvert",
   GetAllAdverts: source + "/advert/allAdverts",
   CreateTeam: source + "/addTeam",
-  UpdateTeam: source + "/updateTeam"
+  UpdateTeam: source + "/updateTeam",
+  UpdateUser: source + "/updateUser",
+  GetAllTeam: source + "/allTeams",
+  GetUser: source + "/user/",
+  GetAvatar: source + "/avatar"
 };

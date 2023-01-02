@@ -21,22 +21,24 @@ import DialogContext from "../Store/Dialog.context";
 import { DialogIcon } from "../Utility/Constants/Dialog";
 import AdvertService from "../Services/Advert/Advert.service";
 import { useSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 
 const AdvertPage = () => {
-  const isMdDown = Helpers.useMediaQuery("down","md")
-  const style ={
+  const isMdDown = Helpers.useMediaQuery("down", "md");
+  const style = {
     root: {
-      width:"250px",
+      width: "250px",
       "label:not(.MuiFormLabel-filled)": {
         top: "-7px",
         "&.Mui-focused": {
-          top: "0px"
-        }
-      }
-    }
-  }
+          top: "0px",
+        },
+      },
+    },
+  };
   const location = useLocation();
   const params = new URLSearchParams(location.search);
+  const advertType = params.get("type").toUpperCase();
   const headers = Helpers.useHeader();
   const navigater = useNavigate();
   const dialogContext = useContext(DialogContext);
@@ -44,45 +46,47 @@ const AdvertPage = () => {
   const [positions, setPositions] = useState([]);
   const [description, setDescription] = useState("");
   const [city, setCity] = useState();
-  const [time,setTime] = useState("");
+  const [time, setTime] = useState("");
   const [allPositions, setAllPositions] = useState();
-  const advertType = params.get("type").toUpperCase();
   const [createData, setCreateData] = useState();
   const { enqueueSnackbar } = useSnackbar();
 
   async function initialSomeData() {
     try {
-      const cityResult = await CityService.GetAllCity(headers);
+      const cityResult = await CityService.GetAllCity();
       setAllCities(cityResult.data);
-      const positionResult = await PositionService.GetAllPositions(headers);
+      const positionResult = await PositionService.GetAllPositions();
       setAllPositions(positionResult.data);
     } catch (error) {
-      enqueueSnackbar(error?.response?.data || "Bir sorunla karşılaştık. Daha sonra tekrar deneyiniz.",{variant:"error"} )
+      enqueueSnackbar(
+        error?.response?.data ||
+          "Bir sorunla karşılaştık. Daha sonra tekrar deneyiniz.",
+        { variant: "error" }
+      );
       console.log("Err:", error);
     }
   }
 
+  const { data } = useSelector((state) => state.user);
   function handleTime(e) {
     let date = new Date(new Date(e.target.value).toISOString()).getTime();
-    setTime(date)
-  };
-
+    setTime(date);
+  }
   useEffect(() => {
-    const oneMonthFromNow = (Date.now() + (30 * 24 * 60 * 60 * 1000));
-   if((time < Date.now() || time >  oneMonthFromNow) && time){
-    dialogContext.setDialog({
-      modalOpen: true,
-      callback: () => { setTime(Date.now()+(30)) },
-      icon: DialogIcon.info,
-      title: "Yanlış Tarih Seçimi",
-      description:
-        `Sadece şu an ile bir ay sonrası arasında seçim yapabilirsiniz.`,
-      primaryButtonText: "Tamam",
-    });
-   } 
-  
-  }, [time])
-  
+    const oneMonthFromNow = Date.now() + 30 * 24 * 60 * 60 * 1000;
+    if ((time < Date.now() || time > oneMonthFromNow) && time) {
+      dialogContext.setDialog({
+        modalOpen: true,
+        callback: () => {
+          setTime(Date.now() + 30);
+        },
+        icon: DialogIcon.info,
+        title: "Yanlış Tarih Seçimi",
+        description: `Sadece şu an ile bir ay sonrası arasında seçim yapabilirsiniz.`,
+        primaryButtonText: "Tamam",
+      });
+    }
+  }, [time]);
 
   useEffect(() => {
     initialSomeData();
@@ -91,8 +95,19 @@ const AdvertPage = () => {
   function renderAdvert(type) {
     return (
       <>
-        <Grid container item justifyContent={"space-evenly"} gap={3} direction={isMdDown ? "column" : "row"}>
-          <Grid justifyContent={"center"} item container  sx={{ maxWidth: "200px" }}>
+        <Grid
+          container
+          item
+          justifyContent={"space-evenly"}
+          gap={3}
+          direction={isMdDown ? "column" : "row"}
+        >
+          <Grid
+            justifyContent={"center"}
+            item
+            container
+            sx={{ maxWidth: "200px" }}
+          >
             <FormControl sx={style.root} fullWidth>
               <InputLabel id="cities">Şehir Seçiniz</InputLabel>
               <Select
@@ -113,19 +128,18 @@ const AdvertPage = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid justifyContent={"center"} item container sx={{ maxWidth: "200px" }}>
+          <Grid
+            justifyContent={"center"}
+            item
+            container
+            sx={{ maxWidth: "200px" }}
+          >
             <TextField
               id="datetime-local"
               label="Maç Saatini Seçiniz"
               type="datetime-local"
-              
               onChange={handleTime}
-              value={
-                Helpers.Date(
-                  time,
-                  "YYYY-MM-DDTHH:mm"
-                ) || ""
-              }
+              value={Helpers.Date(time, "YYYY-MM-DDTHH:mm") || ""}
               size="small"
               sx={{ width: 250 }}
               InputLabelProps={{
@@ -178,7 +192,6 @@ const AdvertPage = () => {
             ></TextField>
           </Grid>
         </Grid>
-        
       </>
     );
   }
@@ -191,61 +204,72 @@ const AdvertPage = () => {
     setPositions([...positions, id]);
   }
 
-  function handleCreateAdvert(){
+  function handleCreateAdvert() {
     setCreateData({
-     data:{
-      dateTime: Helpers.Date(time),
-      description: description,
-      cityId: city,
-      isActive:true,
-      advertType: advertType,
-      positionIds: positions
-     },
-     sendData: true
-    
-    })
+      data: {
+        dateTime: Helpers.Date(time),
+        description: description,
+        cityId: city,
+        id: data.data.id,
+        isActive: true,
+        advertType: advertType,
+        positionIds: positions,
+      },
+      sendData: true,
+    });
   }
   function registerValidater() {
     let isValid = false;
-    console.log(createData.data.positionIds.length);
-    if (createData.data.cityId===undefined) {
-      enqueueSnackbar("Şehir seçimi zorunludur!",{variant:"error"})
+    if (createData.data.cityId === undefined) {
+      enqueueSnackbar("Şehir seçimi zorunludur!", { variant: "error" });
       return false;
     }
-    if (createData.data.dateTime===undefined) {
-      enqueueSnackbar("Tarih seçimi zorunludur!",{variant:"error"})
+    if (createData.data.dateTime === undefined) {
+      enqueueSnackbar("Tarih seçimi zorunludur!", { variant: "error" });
       return false;
     }
-    if (Array.isArray(createData.data.positionIds) && !createData.data.positionIds.length > 0) {
-      enqueueSnackbar("Pozisyon seçimi zorunludur!",{variant:"error"})
+    if (
+      Array.isArray(createData.data.positionIds) &&
+      !createData.data.positionIds.length > 0
+    ) {
+      enqueueSnackbar("Pozisyon seçimi zorunludur!", { variant: "error" });
       return false;
     }
-
+    if (description && description.length > 100) {
+      enqueueSnackbar("Açıklama 100 karakterden uzun olamaz", {
+        variant: "error",
+      });
+      return false;
+    }
 
     return (isValid = true);
   }
-  async function CreateAdvert(){
+  async function CreateAdvert() {
     try {
       if (registerValidater()) {
-        await AdvertService.CreateAdvert(createData.data,headers)
+        await AdvertService.CreateAdvert(createData.data, headers);
         dialogContext.setDialog({
           modalOpen: true,
-          callback: () => { navigater("/",{replace:true})},
+          callback: () => {
+            navigater("/", { replace: true });
+          },
           icon: DialogIcon.success,
           title: "Başarılı",
-          description:
-            `İlanınız Başarıyla Oluşturuldu`,
+          description: `İlanınız Başarıyla Oluşturuldu`,
           primaryButtonText: "Tamam",
         });
       }
     } catch (error) {
-      
-      setCreateData(prev=>({
+      setCreateData((prev) => ({
         ...prev,
-        sendData:false
-      }))
-      enqueueSnackbar(error?.response?.data || "Bir sorun oluştu. Lütfen daha sorna tekrar deneyiniz." ,{variant:"error"})
-      console.log("Err:",error);
+        sendData: false,
+      }));
+      enqueueSnackbar(
+        error?.response?.data ||
+          "Bir sorun oluştu. Lütfen daha sorna tekrar deneyiniz.",
+        { variant: "error" }
+      );
+      console.log("Err:", error);
     }
   }
 
@@ -259,14 +283,22 @@ const AdvertPage = () => {
     <Grid container md={12}>
       <Grid item md={3}></Grid>
       <Grid item md={6}>
-      <Card  sx={{marginY:5,paddingY:5,borderRadius:"20px"}}>
-      <Grid container item gap={2}>{renderAdvert(advertType)}</Grid>
-      <Button sx={{marginTop:3}} onClick={handleCreateAdvert} variant={"contained"}> Oluştur </Button>
-    </Card>
+        <Card sx={{ marginY: 5, paddingY: 5, borderRadius: "20px" }}>
+          <Grid container item gap={2}>
+            {renderAdvert(advertType)}
+          </Grid>
+          <Button
+            sx={{ marginTop: 3 }}
+            onClick={handleCreateAdvert}
+            variant={"contained"}
+          >
+            {" "}
+            Oluştur{" "}
+          </Button>
+        </Card>
       </Grid>
       <Grid item md={3}></Grid>
     </Grid>
   );
 };
 export default AdvertPage;
-

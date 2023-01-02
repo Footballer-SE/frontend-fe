@@ -9,7 +9,10 @@ import {
 } from "@mui/material";
 import { POSITION_TYPE } from "../../Utility/Constants/PositionType";
 import { Helpers } from "../../Utility/Helpers";
-
+import {
+  ADVERT_TYPE,
+  ADVERT_TRANSLATE,
+} from "../../Utility/Constants/AdvertType";
 function AdvertFilter({
   filterCity,
   setFilterCity,
@@ -17,8 +20,10 @@ function AdvertFilter({
   filterPosition,
   setFilterPosition,
   allPositions,
+  setTypeFilter,
+  typeFilter,
 }) {
-    const isMdDown = Helpers.useMediaQuery("down","md");
+  const isMdDown = Helpers.useMediaQuery("down", "md");
   const style = {
     root: {
       width: "250px",
@@ -30,25 +35,51 @@ function AdvertFilter({
       },
     },
   };
+
   return (
-    <Grid container item direction={"column"} gap={2} md={3}>
-      {!isMdDown &&  <Grid item>
-        <Chip
-          sx={{ fontSize: 25, border: 2, padding: 3 }}
-          color="success"
-          label={`Filtrele`}
-          variant={"outlined"}
-        />
-      </Grid>}
+    <Grid container item direction={"column"} gap={3} md={3}>
+      {!isMdDown && (
+        <Grid item>
+          <Chip
+            sx={{ fontSize: 25, border: 2, padding: 3 }}
+            color="success"
+            label={`Filtrele`}
+            variant={"outlined"}
+          />
+        </Grid>
+      )}
       <Grid justifyContent={"center"} item container sx={{ maxWidth: "200px" }}>
         <FormControl sx={style.root} fullWidth>
-          <InputLabel id="cities">Şehir Seçiniz</InputLabel>
+          <InputLabel color="success"  sx={{fontWeight:"bold"}} id="types">Ne İlanı Arıyorsun?</InputLabel>
+          <Select
+            labelId="types"
+            size="small"
+            id="typeSelect"
+            color="success"
+            value={typeFilter ?? ""}
+            label="Ne İlanı Arıyorsun?"
+            onChange={(e) => setTypeFilter(e?.target?.value)}
+          >
+            {Object.keys(ADVERT_TYPE)?.map((e, index) => {
+              return (
+                <MenuItem key={index} value={e}>
+                  {ADVERT_TRANSLATE[e]}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid justifyContent={"center"} item container sx={{ maxWidth: "200px" }}>
+        <FormControl sx={style.root} fullWidth>
+          <InputLabel color="success" sx={{fontWeight:"bold"}} id="cities">Hangi şehirde?</InputLabel>
           <Select
             labelId="cities"
             size="small"
             id="citiSelect"
+            color="success"
             value={filterCity ?? ""}
-            label="Şehir Seçiniz"
+            label="Hangi şehirde?"
             onChange={(e) => setFilterCity(e?.target?.value)}
           >
             {allCities?.map((e) => {
@@ -63,13 +94,15 @@ function AdvertFilter({
       </Grid>
       <Grid justifyContent={"center"} item container sx={{ maxWidth: "200px" }}>
         <FormControl sx={style.root} fullWidth>
-          <InputLabel id="positions">Pozisyon Seçiniz</InputLabel>
+          <InputLabel color="success"  sx={{fontWeight:"bold"}} id="positions">Hangi Pozisyon?</InputLabel>
           <Select
             labelId="positions"
             size="small"
             id="positionSelect"
+            color="success"
+            
             value={filterPosition ?? ""}
-            label="Şehir Seçiniz"
+            label="Hangi Pozisyon?"
             onChange={(e) => setFilterPosition(e?.target?.value)}
           >
             {allPositions?.map((e) => {
@@ -82,6 +115,7 @@ function AdvertFilter({
           </Select>
         </FormControl>
       </Grid>
+
       <Grid
         justifyContent={"center"}
         item
@@ -91,7 +125,8 @@ function AdvertFilter({
       >
         <Button
           size={"small"}
-          onClick={() => (setFilterCity(null), setFilterPosition(null))}
+          color="success"
+          onClick={() => (setFilterCity(null), setFilterPosition(null),setTypeFilter(null))}
           variant={"outlined"}
         >
           Sıfırla

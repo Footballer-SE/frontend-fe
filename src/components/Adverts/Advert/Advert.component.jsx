@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect, useState } from "react";
 import AdvertService from "../../Services/Advert/Advert.service";
 import { ADVERT_TRANSLATE } from "../../Utility/Constants/AdvertType";
-import { Chip, Grid, Paper } from "@mui/material";
+import { Avatar, Box, Chip, Grid, Paper, Stack, Typography } from "@mui/material";
 import CityService from "../../Services/City/City.service";
 import PositionService from "../../Services/Position/Position.service";
 import { Helpers } from "../../Utility/Helpers";
@@ -9,36 +9,107 @@ import { useSnackbar } from "notistack";
 import AdvertFilter from "./AdvertFilter.component";
 import { styled } from "@mui/system";
 import { COLORS } from "../../Utility/Constants/Colors";
+import TeamService from "../../Services/Team/Team.service";
+import SwipeableViews from "react-swipeable-views";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import DialogContext from "../../Store/Dialog.context";
+import { DialogIcon } from "../../Utility/Constants/Dialog";
 
 const LazyCard = React.lazy(() => import("./AdvertCard.component"));
 
 export default function Advert() {
   const [page, setPage] = useState(1);
+  const [allAdverts, setAllAdverts] = useState([]);
   const [adverts, setAdverts] = useState([]);
   const [filterCity, setFilterCity] = useState();
+  const dialogContext = React.useContext(DialogContext);
+
   const [filterPosition, setFilterPosition] = useState();
+  const [typeFilter, setTypeFilter] = useState();
+  const [allTeam, setAllTeam] = useState([])
   const [allPositions, setAllPositions] = useState();
   const [chipPosition, setChipPosition] = useState({});
   const [clicked, setClicked] = useState(false);
   const [allCities, setAllCities] = useState();
   const { enqueueSnackbar } = useSnackbar();
   const isMdDown = Helpers.useMediaQuery("down", "md");
-  const headers = Helpers.useHeader();
 
-  async function initialSomeData() {
-    try {
-      const cityResult = await CityService.GetAllCity(headers);
-      setAllCities(cityResult.data);
-      const positionResult = await PositionService.GetAllPositions(headers);
-      setAllPositions(positionResult.data);
-    } catch (error) {
-      enqueueSnackbar(
-        error?.response?.data ||
-          "Bir sorunla karşılaştık. Daha sonra tekrar deneyiniz.",
-        { variant: "error" }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await AdvertService.GetAllAdverts();
+        setAllAdverts(response.data);
+        setAdverts(response.data);
+      } catch (error) {
+        console.log("Error fetching adverts:", error);
+      }
+    };
+    fetchData();
+  }, []);
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const cityResponse = await CityService.GetAllCity();
+        setAllCities(cityResponse.data);
+        const positionResponse = await PositionService.GetAllPositions();
+        setAllPositions(positionResponse.data);
+        const teamResponse = await TeamService.GetAllTeam();
+        setAllTeam(teamResponse.data);
+      } catch (error) {
+        enqueueSnackbar(
+          error?.response?.data ||
+            "Bir sorunla karşılaştık. Daha sonra tekrar deneyiniz.",
+          { variant: "error" }
+        );
+        console.log("Error fetching cities and positions:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    let filteredAdverts = allAdverts;
+
+    if (filterCity) {
+      filteredAdverts = filteredAdverts.filter(
+        (advert) => advert.city.cityId === filterCity
       );
-      console.log("Err:", error);
     }
+    if (typeFilter) {
+      filteredAdverts = filteredAdverts.filter(
+        (advert) => advert.advertType === typeFilter
+      );
+    }
+    if (filterPosition) {
+      filteredAdverts = filteredAdverts.filter((advert) => {
+        return advert.positions.some(
+          (position) => position.id === filterPosition
+        );
+      });
+    }
+
+    setAdverts(filteredAdverts);
+  }, [filterCity, filterPosition, allAdverts, typeFilter]);
+
+  function handleAvatarClick(team) {
+    if (!user.isLoggedIn) {
+      dialogContext.setDialog({
+        modalOpen: true,
+       
+        icon: DialogIcon.info,
+        title: "Uyarı",
+        description:
+          `Önce giriş yapmalısınız`,
+        primaryButtonText: "Tamam",
+      });
+    } else {
+      navigate(`/user?id=${team.user.id}`)  
+      }
   }
   useEffect(() => {
     const chip = document.querySelector(".chip-class");
@@ -49,46 +120,18 @@ export default function Advert() {
       });
     }
   }, []);
-  // TODO BETTER FILTER
-  async function loadData() {
-    try {
-      const response = await AdvertService.GetAllAdverts();
-
-      if (filterCity) {
-        setAdverts(
-          [...response.data].filter((e) => e.city.cityId === filterCity)
-        );
-        return
-      }
-
-      if (filterPosition) {
-        setAdverts(
-          [...response.data].filter((item) => {
-            return item.positions.some(
-              (position) => position.id === filterPosition
-            );
-          })
-        );
-        return
-      }
-
-        setAdverts([...response.data]);
-      
-    } catch (error) {
-      console.log("Err:", error);
-    }
-  }
 
   const StyledPaper = styled(Paper)({
     position: "absolute",
     zIndex: 1,
     border: `1px solid ${COLORS.MAIN_GREEN}`,
-    borderRadius: "20px",
+    borderRadius: "15px",
     padding: "10px",
     top: chipPosition.top,
     left: chipPosition.left,
     transform: "translateX(-50%)",
   });
+
 
   function showPaper() {
     return (
@@ -100,19 +143,12 @@ export default function Advert() {
           filterPosition={filterPosition}
           setFilterPosition={setFilterPosition}
           allPositions={allPositions}
+          setTypeFilter={setTypeFilter}
+          typeFilter={typeFilter}
         />
       </StyledPaper>
     );
   }
-
-  useEffect(() => {
-    loadData();
-  }, [filterCity, filterPosition]);
-
-  useEffect(() => {
-    initialSomeData();
-  }, []);
-
   const handleScroll = () => {
     const scrollTop =
       document.documentElement.scrollTop || document.body.scrollTop;
@@ -141,6 +177,8 @@ export default function Advert() {
           filterPosition={filterPosition}
           setFilterPosition={setFilterPosition}
           allPositions={allPositions}
+          setTypeFilter={setTypeFilter}
+          typeFilter={typeFilter}
         />
       ) : (
         <Grid
@@ -149,9 +187,38 @@ export default function Advert() {
           sx={{
             marginY: -1,
             paddingBottom: 1,
-            borderBottom: "1px solid black",
           }}
         >
+  <Stack mt={2} sx={{ overflowX: "scroll", padding: "5px" }} direction={"row"}>
+  {Array.isArray(allTeam) &&
+    allTeam.length > 0 &&
+    allTeam.map((team) => {
+      return (
+        <Box
+          key={team.id}
+          maxWidth={"77px"}
+          flexWrap={"wrap"}
+          mr={1}
+        >
+          <Avatar
+            onClick={()=>handleAvatarClick(team)}
+            sx={{ width: "64px", height: "64px",boxShadow:10}}
+            src={team?.avatarImageResponse?.url}
+          ></Avatar>
+          <Typography
+            variant="body2"
+            style={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {team.footballTeamName}
+          </Typography>
+        </Box>
+      );
+    })}
+</Stack>
           <Chip
             className="chip-class"
             sx={{ fontSize: 20, border: 2, boxShadow: 10 }}
@@ -164,18 +231,19 @@ export default function Advert() {
       )}
       {clicked && showPaper()}
       {/** filter */}
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} sx={{ marginTop: 2 }} md={6}>
         {adverts
           .sort((a, b) => b.advertId - a.advertId)
           .slice(0, page * 10)
-          .map((advert) => (
-            <Suspense key={advert.id} fallback={<div>Loading...</div>}>
+          .map((advert, index) => (
+            <Suspense key={index} fallback={<div>Loading...</div>}>
               {advert.isActive && (
                 <LazyCard
                   key={advert.id}
                   dateTime={advert.dateTime}
                   title={`${ADVERT_TRANSLATE[advert.advertType]} ilanı`}
                   city={advert.city}
+                  user={advert?.user}
                   positions={advert.positions}
                   description={
                     advert.description
@@ -187,7 +255,57 @@ export default function Advert() {
             </Suspense>
           ))}
       </Grid>
-      <Grid item md={3}></Grid>
+      <Grid item md={0.2}></Grid>
+      {!isMdDown && (
+        <Grid item md={2.6}>
+          <Chip
+            sx={{ fontSize: 25, border: 2, padding: 3 }}
+            color="success"
+            label={`Takımlar`}
+            variant={"outlined"}
+          />
+          <Stack
+            mt={2}
+            sx={{ overflowY: "scroll", padding: "5px" }}
+            borderRadius={"5px"}
+            border={`1px solid ${COLORS.MAIN_GREEN}`}
+            maxHeight={"calc(70px * 3)"}
+            flexWrap={"wrap"}
+            direction={"row"}
+          >
+            {Array.isArray(allTeam) &&
+              allTeam.length > 0 &&
+              allTeam.map((team) => {
+                return (
+                  <Box
+                    key={team.id}
+                    maxWidth={"77px"}
+                    overflow="hidden"
+                    flexWrap={"wrap"}
+                  >
+                    <Avatar
+                                onClick={()=>handleAvatarClick(team)}
+
+                      sx={{ width: "64px", height: "64px",
+                    cursor:"pointer" }}
+                      src={team.avatarImageResponse.url}
+                    ></Avatar>
+                    <Typography
+                      variant="body2"
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {team.footballTeamName}
+                    </Typography>
+                  </Box>
+                );
+              })}
+          </Stack>
+        </Grid>
+      )}
     </Grid>
   );
 }

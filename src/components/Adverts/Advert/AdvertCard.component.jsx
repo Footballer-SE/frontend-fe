@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardContent,
   Chip,
@@ -18,11 +19,12 @@ export default function AdvertCard({
   positions,
   city,
   dateTime,
+  user
 }) {
   const isMdDown = Helpers.useMediaQuery("down", "md");
   return (
     <>
-      <Card sx={{ background: COLORS.ADVERT_OPACITY02 }}>
+      <Card sx={{ background: COLORS.ADVERT_OPACITY02,boxShadow:10,marginBottom:2 }}>
         <CardContent>
           <Chip
             sx={{ fontSize: 35, border: 2, padding: 3,color:"white" }}
@@ -111,8 +113,7 @@ export default function AdvertCard({
                 marginRight={!isMdDown && 2}
                 fontWeight={"bold"}
               >
-                {" "}
-                Maç Tarihi{" "}
+                Maç Tarihi
               </Typography>
             </Grid>
             <Grid
@@ -130,7 +131,14 @@ export default function AdvertCard({
             </Grid>
           </Grid>
         </CardContent>
-        <CardContent>{description}</CardContent>
+        <CardContent>
+          <Typography  >
+          {description}
+          </Typography>
+        </CardContent>
+        <Grid sx={{position:"relative", right:"5%",bottom:"20px",marginTop:1}} textAlign={"end"}>
+          <Chip  color="success" variant="outlined" label={`${user?.telephoneNumber}`} />
+        </Grid>
       </Card>
     </>
   );

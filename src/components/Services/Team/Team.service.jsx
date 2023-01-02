@@ -10,6 +10,10 @@ const TeamService = {
     const result = await Http.PUT(Endpoints.UpdateTeam, data, headers);
     return result;
   },
+  GetAllTeam: async function (){
+    const result = await Http.GET(Endpoints.GetAllTeam);
+    return result;
+  }
 };
 
 export default TeamService;
